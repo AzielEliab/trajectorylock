@@ -8,3 +8,4 @@ node_modules/
 workers/download-tracker/node_modules/
 .wrangler
 workers/download-tracker/.wrangler
+workers/download-tracker/node_modules
