@@ -1,0 +1,90 @@
+{
+  "schema_version": "trajectorylock-result-0.1",
+  "case_id": "SYNTHETIC-DEMO-001",
+  "generated_at_utc": "2026-09-02T15:50:17.685822+00:00",
+  "input_sha256": "77e20c160157597b561192b624c56fc5b48fefe365a1f770b3d144663b62556d",
+  "trajectory": {
+    "point_m": [
+      5.984722,
+      0.492361,
+      1.196944
+    ],
+    "direction_unit": [
+      0.88045091,
+      0.44022545,
+      0.17609018
+    ],
+    "angular_sigma_deg": 0.198,
+    "offset_sigma_m": 0.007848,
+    "fit_rms_residual_m": 0.0
+  },
+  "reconstructed_features": {
+    "entry": {
+      "point_m": [
+        5.0,
+        -0.0,
+        1.0
+      ],
+      "sigma_m": 0.007789,
+      "ray_residual_m": 0.0,
+      "condition_number": 1.057,
+      "observation_count": 3
+    },
+    "exit": {
+      "point_m": [
+        7.0,
+        1.0,
+        1.4
+      ],
+      "sigma_m": 0.007909,
+      "ray_residual_m": 0.0,
+      "condition_number": 1.044,
+      "observation_count": 3
+    }
+  },
+  "official_narrative_comparison": {
+    "measured_angle_difference_deg": 0.0,
+    "measured_line_offset_m": 0.0059,
+    "compatibility_score_percent": 91.8,
+    "threshold_match_probability_percent": 99.89,
+    "conclusion": "consistent_with_declared_tolerances",
+    "angle_95_interval_deg": [
+      0.1832,
+      2.2232
+    ],
+    "offset_95_interval_m": [
+      0.0012,
+      0.0921
+    ],
+    "monte_carlo_samples": 12000,
+    "random_seed": 23,
+    "declared_tolerances": {
+      "angle_deg": 3.0,
+      "offset_m": 0.25
+    }
+  },
+  "reconstruction_confidence": {
+    "confidence_percent": 72.18,
+    "effective_source_count": 3.0,
+    "independent_group_count": 4,
+    "calibrated_source_fraction": 0.75
+  },
+  "witness_corroboration": {
+    "count": 1,
+    "weighted_agreement_percent": 99.46,
+    "details": [
+      {
+        "source_id": "witness-1",
+        "angle_difference_deg": 1.246,
+        "agreement_percent": 99.46,
+        "reliability_weight": 0.6
+      }
+    ]
+  },
+  "warnings": [],
+  "interpretation": {
+    "primary_statement": "consistent_with_declared_tolerances",
+    "guardrail": "Scores measure geometric compatibility under declared assumptions; they do not establish intent, identity, credibility, or legal truth."
+  },
+  "result_sha256": "18571ed9dd1737b43b9c28921a2fd7cf146669774985676408cbb7ab16633e27"
+}

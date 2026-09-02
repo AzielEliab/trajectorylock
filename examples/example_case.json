@@ -1,0 +1,16 @@
+{
+  "case_id": "MINIMAL-DIRECT-LINE",
+  "sources": [
+    {"id": "survey-a", "kind": "scene_survey", "quality": 0.95, "reliability": 1.0, "calibrated": true, "independence_group": "survey-a"}
+  ],
+  "observations": [
+    {"type": "direct_line", "source_id": "survey-a", "point": [0, 0, 1.2], "direction": [1, 0.1, 0.02], "angular_sigma_deg": 0.5, "offset_sigma_m": 0.02}
+  ],
+  "official_hypothesis": {
+    "point": [0.01, 0.01, 1.19], "direction": [1, 0.11, 0.02],
+    "angular_sigma_deg": 0.7, "offset_sigma_m": 0.04,
+    "angle_tolerance_deg": 3.0, "offset_tolerance_m": 0.25
+  },
+  "analysis": {"monte_carlo_samples": 10000, "random_seed": 7}
+}
+

@@ -1,0 +1,146 @@
+# TrajectoryLock
+
+Auditable geometric trajectory test. Research prototype, not a certified forensic instrument.
+
+**Author:** Aziel Eliab
+**Date:** 2 September 2026
+**License:** [Apache-2.0](LICENSE)
+**Version:** 0.1.0
+**Spec:** `trajectorylock-v0.1`
+**Paper:** TL-WP-0.1 — [docs/TrajectoryLock_v0.1.pdf](docs/TrajectoryLock_v0.1.pdf) · DOI [10.5281/zenodo.22258015](https://doi.org/10.5281/zenodo.22258015)
+
+**Forks are welcome and always allowed.**
+
+## Honest scope
+
+**THIS IS:** research prototype / auditable geometric test. Compatibility vs declared official line. Independence groups so copies don't inflate certainty. CLI + local workbench + JSON API.
+
+**THIS IS NOT:** a certified forensic instrument; substitute for scene reconstruction, medical findings, lab exam; shooter/intent/guilt/narrative identifier; automatic detection of invisible projectiles; face recognition. Match probability is P(match | declared model), not P(official account is true). Synthetic example results must never be represented as real-case findings. No private case facts.
+
+Public identity **Aziel Eliab** only.
+
+## One-click install
+
+```bash
+curl -fsSL https://trajectorylock-download-tracker.vibelock.workers.dev/install.sh | bash
+```
+
+Then run `trajectorylock ui` (or `trajectorylock server`) and open http://127.0.0.1:8874 (loopback only).
+
+Or tap **Download** / **One-click install** on the Worker homepage:
+https://trajectorylock-download-tracker.vibelock.workers.dev/
+
+## Quick start
+
+```bash
+python -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"
+python -m trajectorylock.cli demo -o result.json
+trajectorylock ui
+trajectorylock doctor
+python -m pytest -q
+```
+
+Open http://127.0.0.1:8874. No CDN, no telemetry.
+
+## Counted download (Cloudflare Worker)
+
+**This is the counted download.** GitHub releases exist as a mirror.
+The Worker serves the gzip itself (HTTP 200, no 302 to GitHub).
+
+# → [https://trajectorylock-download-tracker.vibelock.workers.dev/](https://trajectorylock-download-tracker.vibelock.workers.dev/) ←
+
+Direct tarball (also counted):
+[trajectorylock-0.1.0.tar.gz](https://trajectorylock-download-tracker.vibelock.workers.dev/download?asset=trajectorylock-0.1.0.tar.gz)
+
+- Live count JSON: [https://trajectorylock-download-tracker.vibelock.workers.dev/stats](https://trajectorylock-download-tracker.vibelock.workers.dev/stats)
+- OpenAPI: [https://trajectorylock-download-tracker.vibelock.workers.dev/openapi.json](https://trajectorylock-download-tracker.vibelock.workers.dev/openapi.json)
+- Skill: [https://trajectorylock-download-tracker.vibelock.workers.dev/v1/skill](https://trajectorylock-download-tracker.vibelock.workers.dev/v1/skill)
+- GitHub: [https://github.com/AzielEliab/trajectorylock](https://github.com/AzielEliab/trajectorylock)
+
+Isolated counter: Worker `trajectorylock-download-tracker`, KV `TRAJECTORYLOCK_DOWNLOADS`. Not mixed with any other product. `/v1` does not increment downloads. Hosted never stores media.
+
+## CLI
+
+```bash
+python3 trajectorylock.py demo -o result.json
+python3 trajectorylock.py analyze examples/example_case.json -o result.json
+python3 trajectorylock.py hash-media video.mp4 photo.jpg
+trajectorylock ui
+trajectorylock doctor
+```
+
+## Local UI
+
+`trajectorylock ui` serves a loopback dashboard at http://127.0.0.1:8874
+
+Simple (6th-grader labels): **Load example**, **Analyze**, **Verify hashes**, **Export receipt**.
+Three separate numbers: *how close is this line to the claimed line* (compatibility), match chance, how strong is the evidence.
+Advanced JSON. Doctor/debug. Import/export. Frozen tolerances. Guardrail always shown.
+Binds `127.0.0.1` only.
+
+## iPhone & Android
+
+Flutter sources: [`mobile/`](mobile/). Application id
+`com.azieeliab.trajectorylock`. Offline. No analytics. Dark matte / gold.
+Not a store listing. Not a separate repo. Not store IPAs.
+
+```bash
+cd mobile
+flutter create --org com.azieeliab --project-name trajectorylock .
+flutter pub get
+flutter run
+```
+
+## Hosted `/v1`
+
+The Worker hosts a **stateless** JSON API. It does not increment DOWNLOADS. It never stores media.
+
+- `GET /v1/health`
+- `GET /v1/skill` — this repo's [SKILL.md](SKILL.md)
+- `GET /v1/example` — synthetic small JSON case
+- `POST /v1/analyze` — small JSON case in, result out (size cap; never stores media)
+- OpenAPI: `/openapi.json`
+- MCP: this Worker `/mcp` and catalog `https://aziel-runtime.vibelock.workers.dev/mcp`
+
+Banner: not a certified instrument.
+
+Always send `User-Agent: Mozilla/5.0`. Empty agents can 403.
+
+**ChatGPT** — GPT Actions → Import from URL →
+`https://aziel-runtime.vibelock.workers.dev/openapi.json`
+
+**Grok** — custom tool / OpenAPI: same catalog URL.
+MCP remote: `POST https://aziel-runtime.vibelock.workers.dev/mcp`
+
+**Venice** — custom HTTP tools / OpenAPI: same catalog OpenAPI.
+
+Example:
+
+```bash
+curl -s -A 'Mozilla/5.0' https://trajectorylock-download-tracker.vibelock.workers.dev/v1/health
+curl -s -A 'Mozilla/5.0' -X POST https://aziel-runtime.vibelock.workers.dev/p/trajectorylock/analyze \
+  -H 'content-type: application/json' \
+  -d '{"case_id":"MINIMAL-DIRECT-LINE","sources":[{"id":"survey-a","quality":0.95,"calibrated":true,"independence_group":"survey-a"}],"observations":[{"type":"direct_line","source_id":"survey-a","point":[0,0,1.2],"direction":[1,0.1,0.02],"angular_sigma_deg":0.5,"offset_sigma_m":0.02}],"official_hypothesis":{"point":[0.01,0.01,1.19],"direction":[1,0.11,0.02],"angular_sigma_deg":0.7,"offset_sigma_m":0.04,"angle_tolerance_deg":3.0,"offset_tolerance_m":0.25},"analysis":{"monte_carlo_samples":400,"random_seed":7}}'
+```
+
+## Papers
+
+- Paper (PDF): [TrajectoryLock_v0.1.pdf](https://zenodo.org/records/22258015)
+- DOI: [https://doi.org/10.5281/zenodo.22258015](https://doi.org/10.5281/zenodo.22258015)
+- Zenodo record: [https://zenodo.org/records/22258015](https://zenodo.org/records/22258015)
+- License: Apache-2.0. Creator: Eliab, Aziel.
+
+## Mesh (siblings, not this product)
+
+| Sibling | Boundary |
+|---------|----------|
+| SpectralLock | Image overlay preview. Not a trajectory solver. |
+| EmployeeLock | Accountability workbook. Does not reconstruct lines. |
+| FoldLock | Tether-word fold. Not geometry. |
+| GodLock | Public ABAD node. Not a forensic instrument. |
+
+## Tests
+
+```bash
+python -m pytest -q
+```

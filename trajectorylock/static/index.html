@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TrajectoryLock workbench</title>
+<style>
+:root{color-scheme:dark;--ink:#e8e0d0;--muted:#9aa3b2;--gold:#c9a227;--bg:#0b0b0b;--panel:#141414;--line:#2a3140;--warn:#f0d78c;--warnbg:#241c0d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,sans-serif}
+header,main{max-width:1100px;margin:auto;padding:20px}
+header{display:flex;justify-content:space-between;align-items:end;border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:1.7rem;color:var(--gold)}
+.tag{color:var(--muted);font-size:.92rem}
+.banner{border:1px solid #5c4a1a;background:var(--warnbg);color:var(--warn);padding:.85rem 1rem;border-radius:8px;margin:14px 0;font-size:.92rem}
+.tabs{display:flex;gap:8px;margin:12px 0}
+.tabs button{background:#1b1b1b;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:.45rem .9rem;cursor:pointer;font-weight:650}
+.tabs button.on{background:var(--gold);color:#0b0b0b}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+button.act{background:var(--gold);color:#0b0b0b;border:0;border-radius:8px;padding:.7rem 1rem;font-weight:750;cursor:pointer}
+button.sec{background:#222;color:var(--ink);border:1px solid var(--line)}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.metric{border:1px solid var(--line);border-radius:10px;padding:12px;background:#101010}
+.metric b{display:block;font-size:1.55rem;color:var(--gold)}
+.metric small{color:var(--muted)}
+.kid{margin:0 0 10px;font-size:1.05rem}
+textarea{width:100%;min-height:280px;background:#0e0e0e;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px;font:12px/1.45 ui-monospace,monospace}
+pre{white-space:pre-wrap;word-break:break-word;background:#0e0e0e;border:1px solid var(--line);padding:12px;border-radius:8px;min-height:180px;max-height:520px;overflow:auto}
+.warn{color:var(--warn);font-size:.9rem}
+.hidden{display:none}
+.tol{color:var(--muted);font-size:.9rem}
+@media(max-width:850px){.metrics{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>TrajectoryLock</h1>
+    <div class="tag">Research prototype v0.1 · not a certified forensic instrument · Aziel Eliab</div>
+  </div>
+  <div class="tag">loopback workbench · frozen tolerances</div>
+</header>
+<main>
+  <p class="banner" id="banner">THIS IS: research prototype / auditable geometric test. Compatibility vs declared official line. Independence groups so copies don't inflate certainty. CLI + local workbench + JSON API. THIS IS NOT: a certified forensic instrument; substitute for scene reconstruction, medical findings, lab exam; shooter/intent/guilt/narrative identifier; automatic detection of invisible projectiles; face recognition. Match probability is P(match | declared model), not P(official account is true). Synthetic example results must never be represented as real-case findings. No private case facts. Author: Aziel Eliab.</p>
+  <p class="kid"><strong>How close is this line to the claimed line?</strong> Three separate numbers — they are not the same thing.</p>
+  <div class="tabs">
+    <button class="on" id="tab-simple" type="button">Simple</button>
+    <button id="tab-adv" type="button">Advanced JSON</button>
+  </div>
+  <div class="btns">
+    <button class="act" id="load" type="button">Load example</button>
+    <button class="act" id="analyze" type="button">Analyze</button>
+    <button class="act sec" id="verify" type="button">Verify hashes</button>
+    <button class="act sec" id="export" type="button">Export receipt</button>
+    <button class="act sec" id="import" type="button">Import</button>
+    <button class="act sec" id="doctor" type="button">Doctor / debug</button>
+    <input id="file" type="file" accept="application/json,.json" class="hidden">
+  </div>
+  <div class="metrics">
+    <div class="metric"><b id="compat">—</b><small>compatibility<br>how close is this line to the claimed line</small></div>
+    <div class="metric"><b id="match">—</b><small>match chance<br>P(match | declared model) inside frozen tolerances</small></div>
+    <div class="metric"><b id="conf">—</b><small>how strong is the evidence<br>independent groups, not copies</small></div>
+  </div>
+  <p class="tol" id="tol">Frozen tolerances: load a case, then Analyze. Do not retune after seeing the result without a new hypothesis revision.</p>
+  <section class="panel" id="simple-panel">
+    <h2>Kid-plain result</h2>
+    <pre id="plain">Load the synthetic example (not a real case), then Analyze.</pre>
+    <p class="warn" id="guard">Guardrail always shown. This is not a certified forensic instrument.</p>
+  </section>
+  <section class="panel hidden" id="adv-panel">
+    <h2>Case JSON</h2>
+    <textarea id="case" spellcheck="false"></textarea>
+    <h2>Raw result</h2>
+    <pre id="raw">Advanced JSON appears here after Analyze.</pre>
+  </section>
+</main>
+<script>
+const q=s=>document.querySelector(s);
+let lastResult=null;
+function setTab(adv){
+  q('#tab-simple').classList.toggle('on', !adv);
+  q('#tab-adv').classList.toggle('on', adv);
+  q('#simple-panel').classList.toggle('hidden', adv);
+  q('#adv-panel').classList.toggle('hidden', !adv);
+}
+q('#tab-simple').onclick=()=>setTab(false);
+q('#tab-adv').onclick=()=>setTab(true);
+function showResult(d){
+  lastResult=d;
+  const c=d.official_narrative_comparison||{};
+  const r=d.reconstruction_confidence||{};
+  q('#compat').textContent=(c.compatibility_score_percent??'—')+'%';
+  q('#match').textContent=(c.threshold_match_probability_percent??'—')+'%';
+  q('#conf').textContent=(r.confidence_percent??'—')+'%';
+  const t=c.declared_tolerances||d.frozen_tolerances||{};
+  q('#tol').textContent='Frozen tolerances: angle '+t.angle_deg+' deg, offset '+t.offset_m+' m. Do not retune after seeing the result without a new hypothesis revision.';
+  const g=d.interpretation&&d.interpretation.guardrail;
+  q('#guard').textContent=g||'This is not a certified forensic instrument.';
+  const warns=(d.warnings||[]).join('; ')||'none';
+  q('#plain').textContent=[
+    'Case: '+(d.case_id||'?')+'  (synthetic example results are never real-case findings)',
+    'Conclusion: '+(c.conclusion||'?'),
+    '',
+    'How close is this line to the claimed line (compatibility): '+(c.compatibility_score_percent??'—')+'%',
+    'Match chance P(match | declared model): '+(c.threshold_match_probability_percent??'—')+'%',
+    'How strong is the evidence (independence groups): '+(r.confidence_percent??'—')+'%  groups='+(r.independent_group_count??'?')+'  effective sources='+(r.effective_source_count??'?'),
+    'Angle difference: '+(c.measured_angle_difference_deg??'—')+' deg   offset: '+(c.measured_line_offset_m??'—')+' m',
+    'Warnings: '+warns,
+    '',
+    'Guardrail: '+(g||''),
+    'Certified instrument: false. Author: Aziel Eliab. Paper: https://doi.org/10.5281/zenodo.22258015'
+  ].join('\n');
+  q('#raw').textContent=JSON.stringify(d,null,2);
+}
+async function load(){
+  const r=await fetch('/api/example');
+  const d=await r.json();
+  q('#case').value=JSON.stringify(d,null,2);
+  q('#plain').textContent='Loaded synthetic example '+d.case_id+'. Not a real case. Press Analyze.';
+}
+async function analyze(){
+  q('#plain').textContent='Analyzing…';
+  try{
+    const r=await fetch('/api/analyze',{method:'POST',headers:{'content-type':'application/json'},body:q('#case').value||'{}'});
+    const d=await r.json();
+    if(!r.ok) throw Error(d.error||'request failed');
+    showResult(d);
+  }catch(e){ q('#plain').textContent='Error: '+e.message; }
+}
+async function verify(){
+  try{
+    const caseObj=JSON.parse(q('#case').value||'{}');
+    const r=await fetch('/api/fingerprint',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({case:caseObj})});
+    const d=await r.json();
+    const extra=lastResult?(' result_sha256='+lastResult.result_sha256+' input_sha256='+lastResult.input_sha256):'';
+    q('#plain').textContent='Case JSON SHA-256: '+d.sha256+extra+'\nCertified instrument: false.\n'+ (d.guardrail||'');
+  }catch(e){ q('#plain').textContent='Verify error: '+e.message; }
+}
+function exportReceipt(){
+  const blob=new Blob([JSON.stringify(lastResult||{error:'analyze first'},null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=(lastResult&&lastResult.case_id?lastResult.case_id:'trajectorylock')+'-receipt.json';
+  a.click();
+}
+q('#import').onclick=()=>q('#file').click();
+q('#file').onchange=async ev=>{
+  const f=ev.target.files&&ev.target.files[0];
+  if(!f) return;
+  q('#case').value=await f.text();
+  setTab(true);
+};
+async function doctor(){
+  const r=await fetch('/api/doctor');
+  const d=await r.json();
+  q('#plain').textContent=JSON.stringify(d,null,2);
+  setTab(false);
+}
+q('#load').onclick=load;
+q('#analyze').onclick=analyze;
+q('#verify').onclick=verify;
+q('#export').onclick=exportReceipt;
+q('#doctor').onclick=doctor;
+load();
+</script>
+</body>
+</html>

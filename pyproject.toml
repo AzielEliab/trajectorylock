@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trajectorylock"
+version = "0.1.0"
+description = "Auditable geometric trajectory test. Research prototype, not a certified forensic instrument. Author Aziel Eliab."
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [{name = "Aziel Eliab"}]
+requires-python = ">=3.10"
+keywords = [
+    "trajectorylock",
+    "geometry",
+    "forensics-research",
+    "monte-carlo",
+    "audit",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = ["numpy>=1.24"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4"]
+
+[project.scripts]
+trajectorylock = "trajectorylock.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/AzielEliab/trajectorylock"
+Download = "https://trajectorylock-download-tracker.vibelock.workers.dev/download?asset=trajectorylock-0.1.0.tar.gz"
+Issues = "https://github.com/AzielEliab/trajectorylock/issues"
+Counted-downloads = "https://trajectorylock-download-tracker.vibelock.workers.dev/"
+Paper = "https://doi.org/10.5281/zenodo.22258015"
+
+[tool.setuptools.packages.find]
+include = ["trajectorylock*"]
+
+[tool.setuptools.package-data]
+trajectorylock = ["static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"
