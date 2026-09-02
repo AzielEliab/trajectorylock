@@ -1,6 +1,6 @@
 # TrajectoryLock
 
-Auditable geometric trajectory test. Research prototype, not a certified forensic instrument.
+Checks how close a line is to a claimed line. Research prototype, not a certified forensic instrument. Does not identify a shooter, intent, or guilt.
 
 **Author:** Aziel Eliab
 **Date:** 2 September 2026
@@ -11,6 +11,14 @@ Auditable geometric trajectory test. Research prototype, not a certified forensi
 
 **Forks are welcome and always allowed.**
 
+## Three steps
+
+1. Install: `curl -fsSL https://trajectorylock-download-tracker.vibelock.workers.dev/install.sh | bash`
+2. Run `trajectorylock ui` and open http://127.0.0.1:8874 (this computer only).
+3. Tap **Load example** (or **Import** your JSON), then **Run check**. Read the three numbers. **Export** if you want a receipt.
+
+Those numbers say how close a line is to a claimed line. They do not name a shooter, intent, or guilt.
+
 ## Honest scope
 
 **THIS IS:** research prototype / auditable geometric test. Compatibility vs declared official line. Independence groups so copies don't inflate certainty. CLI + local workbench + JSON API.
@@ -18,29 +26,6 @@ Auditable geometric trajectory test. Research prototype, not a certified forensi
 **THIS IS NOT:** a certified forensic instrument; substitute for scene reconstruction, medical findings, lab exam; shooter/intent/guilt/narrative identifier; automatic detection of invisible projectiles; face recognition. Match probability is P(match | declared model), not P(official account is true). Synthetic example results must never be represented as real-case findings. No private case facts.
 
 Public identity **Aziel Eliab** only.
-
-## One-click install
-
-```bash
-curl -fsSL https://trajectorylock-download-tracker.vibelock.workers.dev/install.sh | bash
-```
-
-Then run `trajectorylock ui` (or `trajectorylock server`) and open http://127.0.0.1:8874 (loopback only).
-
-Or tap **Download** / **One-click install** on the Worker homepage:
-https://trajectorylock-download-tracker.vibelock.workers.dev/
-
-## Quick start
-
-```bash
-python -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"
-python -m trajectorylock.cli demo -o result.json
-trajectorylock ui
-trajectorylock doctor
-python -m pytest -q
-```
-
-Open http://127.0.0.1:8874. No CDN, no telemetry.
 
 ## Counted download (Cloudflare Worker)
 
@@ -57,7 +42,22 @@ Direct tarball (also counted):
 - Skill: [https://trajectorylock-download-tracker.vibelock.workers.dev/v1/skill](https://trajectorylock-download-tracker.vibelock.workers.dev/v1/skill)
 - GitHub: [https://github.com/AzielEliab/trajectorylock](https://github.com/AzielEliab/trajectorylock)
 
-Isolated counter: Worker `trajectorylock-download-tracker`, KV `TRAJECTORYLOCK_DOWNLOADS`. Not mixed with any other product. `/v1` does not increment downloads. Hosted never stores media.
+Isolated counter: Worker `trajectorylock-download-tracker`, KV `TRAJECTORYLOCK_DOWNLOADS`. Not mixed with any other product. `/v1` does not increment downloads. Hosted `/v1` never stores media.
+
+Or tap **Download** / **One-click install** on the Worker homepage:
+https://trajectorylock-download-tracker.vibelock.workers.dev/
+
+## From source
+
+```bash
+python -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"
+python -m trajectorylock.cli demo -o result.json
+trajectorylock ui
+trajectorylock doctor
+python -m pytest -q
+```
+
+Open http://127.0.0.1:8874. No CDN, no telemetry.
 
 ## CLI
 
@@ -73,9 +73,8 @@ trajectorylock doctor
 
 `trajectorylock ui` serves a loopback dashboard at http://127.0.0.1:8874
 
-Simple (6th-grader labels): **Load example**, **Analyze**, **Verify hashes**, **Export receipt**.
+One obvious screen: **Load example** / **Import** JSON, **Run check**, see the result. **Export**. **Verify** and **Doctor** speak in plain words.
 Three separate numbers: *how close is this line to the claimed line* (compatibility), match chance, how strong is the evidence.
-Advanced JSON. Doctor/debug. Import/export. Frozen tolerances. Guardrail always shown.
 Binds `127.0.0.1` only.
 
 ## iPhone & Android

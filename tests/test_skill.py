@@ -15,3 +15,16 @@ def test_skill_frontmatter_and_urls() -> None:
     assert ("GodLock" + ".AZ") not in SKILL
     assert "10.5281/zenodo.22258015" in SKILL
     assert "/v1/analyze" in SKILL or "/v1/example" in SKILL
+
+
+def test_readme_three_steps() -> None:
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    assert "## Three steps" in readme
+    assert "Load example" in readme
+    assert "Run check" in readme
+    assert "Import" in readme
+    assert "10.5281/zenodo.22258015" in readme
+    assert "never stores media" in readme.lower()
+    assert "certified forensic instrument" in readme.lower()
+    assert "Aziel Eliab" in readme
+    assert ("GodLock" + ".AZ") not in readme

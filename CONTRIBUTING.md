@@ -21,7 +21,7 @@ Python 3.10+. Core depends on NumPy. pytest is the dev extra. No network.
 1. **Not a certified forensic instrument.** Do not claim courtroom readiness.
 2. **Three numbers stay separate:** compatibility, match chance P(match | declared model), evidence strength.
 3. **Independence groups.** Copies of one clip must not inflate certainty.
-4. **UI binds loopback only** (`127.0.0.1:8874`). Do not listen on `0.0.0.0` from `trajectorylock ui`. No telemetry. No CDN.
+4. **UI binds loopback only** (`127.0.0.1:8874`). One obvious screen: load JSON, run check, see result. Import + Export. Do not listen on `0.0.0.0` from `trajectorylock ui`. No telemetry. No CDN.
 5. **Do not mix the download tracker** with any other product's Worker or KV. Namespace `TRAJECTORYLOCK_DOWNLOADS` only.
 6. **Public identity is Aziel Eliab only.** Never attach a GodLock-plus-AZ identity label.
 7. Synthetic example results must never be represented as real-case findings. No private case facts.

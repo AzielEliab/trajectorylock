@@ -7,6 +7,7 @@ const limitation =
     'Compatibility vs the claimed line. Independence groups so copies '
     'do not inflate certainty. THIS IS NOT a certified forensic instrument, '
     'a shooter identifier, or a substitute for scene reconstruction. '
+    'It does not identify a shooter, intent, or guilt. '
     'Match chance is P(match | declared model). Author Aziel Eliab.';
 
 void main() {
@@ -36,8 +37,8 @@ class WorkbenchPage extends StatefulWidget {
 
 class _WorkbenchPageState extends State<WorkbenchPage> {
   String kid =
-      'How close is this line to the claimed line? Three separate numbers. '
-      'Full analysis is the desktop package. Not a certified instrument.';
+      'How close is this line to the claimed line? Load JSON. Run check. See the result. '
+      'Three separate numbers. Full analysis is the desktop package. Not a certified instrument.';
   String compat = '—';
   String match = '—';
   String evidence = '—';
@@ -65,10 +66,18 @@ class _WorkbenchPageState extends State<WorkbenchPage> {
                 onPressed: () {
                   setState(() {
                     kid =
-                        'Loaded synthetic example. Not a real case. Desktop Analyze computes the three numbers.';
+                        'Loaded synthetic example. Not a real case. Tap Run check on the desktop workbench.';
                   });
                 },
                 child: const Text('Load example'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  setState(() {
+                    kid = 'Import JSON on the desktop workbench. This phone screen does not store media.';
+                  });
+                },
+                child: const Text('Import'),
               ),
               FilledButton(
                 onPressed: () {
@@ -77,26 +86,27 @@ class _WorkbenchPageState extends State<WorkbenchPage> {
                     match = 'local';
                     evidence = 'local';
                     kid =
-                        'Analyze on the desktop workbench. This phone screen does not claim a courtroom result.';
+                        'Run check on the desktop workbench. This phone screen does not claim a courtroom result. It does not name a shooter, intent, or guilt.';
                   });
                 },
-                child: const Text('Analyze'),
+                child: const Text('Run check'),
               ),
               FilledButton(
                 onPressed: () {
                   setState(() {
-                    kid = 'Verify hashes on the desktop. SHA-256 of the case JSON and result receipt.';
+                    kid = 'Export is a JSON receipt on the desktop. Guardrail always included.';
                   });
                 },
-                child: const Text('Verify hashes'),
+                child: const Text('Export'),
               ),
               FilledButton(
                 onPressed: () {
                   setState(() {
-                    kid = 'Export receipt is a JSON file on the desktop. Guardrail always included.';
+                    kid =
+                        'Verify: fingerprint of the case JSON. Doctor: self-check in plain words. Neither names a shooter, intent, or guilt.';
                   });
                 },
-                child: const Text('Export receipt'),
+                child: const Text('Verify'),
               ),
             ],
           ),

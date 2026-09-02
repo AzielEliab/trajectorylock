@@ -121,6 +121,42 @@ CHECKS: tuple[Callable[[], Check], ...] = (
     _check_loopback,
 )
 
+PLAIN_LABELS = {
+    "version": "Version number is the one we shipped",
+    "identity": "Public author is Aziel Eliab only",
+    "guardrail": "Banner refuses overclaim (no shooter, intent, or guilt)",
+    "geometry": "Line math (angle, offset, crossing rays)",
+    "independence": "Copies of one source do not inflate certainty",
+    "demo": "Synthetic example still runs (not a real case)",
+    "loopback": "Workbench stays on this computer (127.0.0.1)",
+}
+
+
+def format_plain(payload: dict) -> str:
+    """Kid-plain doctor/Verify text. No jargon dump."""
+    head = (
+        "Doctor says: the self-check passed. The tool is working."
+        if payload.get("ok")
+        else "Doctor says: a self-check failed. See the list below."
+    )
+    lines = [
+        head,
+        "This is a research prototype, not a certified forensic instrument.",
+        "It does not identify a shooter, intent, or guilt.",
+        "",
+    ]
+    for check in payload.get("checks") or []:
+        mark = "ok" if check.get("ok") else "FAIL"
+        label = PLAIN_LABELS.get(check.get("name"), check.get("name"))
+        extra = f" — {check.get('detail')}" if check.get("detail") else ""
+        lines.append(f"[{mark}] {label}{extra}")
+    lines += [
+        "",
+        "No network. No telemetry. Author: Aziel Eliab.",
+        "DOI: https://doi.org/10.5281/zenodo.22258015",
+    ]
+    return "\n".join(lines)
+
 
 def run_doctor(*, as_json: bool = False) -> int:
     results = []
@@ -130,9 +166,6 @@ def run_doctor(*, as_json: bool = False) -> int:
         results.append({"name": name, "ok": ok, "detail": detail})
         if not ok:
             failed += 1
-        mark = "ok" if ok else "FAIL"
-        if not as_json:
-            print(f"[{mark}] {name}" + (f" — {detail}" if detail else ""))
     payload = {
         "ok": failed == 0,
         "failed": failed,
@@ -146,9 +179,10 @@ def run_doctor(*, as_json: bool = False) -> int:
         "network": False,
         "telemetry": False,
     }
+    payload["plain"] = format_plain(payload)
     if as_json:
         print(json.dumps(payload, indent=2))
     else:
-        print("limitation:", LIMITATION)
+        print(payload["plain"])
         print("doctor", "passed" if failed == 0 else "failed")
     return 0 if failed == 0 else 1

@@ -43,6 +43,8 @@ Always send a normal \`User-Agent\` (for example \`Mozilla/5.0\`). Cloudflare Wo
 - Fetch the synthetic example. Never present it as a real case.
 - Health / skill / OpenAPI. Never invent a shooter, intent, or guilt.
 
+Local UI is one screen: load JSON, run check, see the result. Import and Export. Doctor/Verify speak in plain words.
+
 Hosted \`/v1/analyze\` caps JSON size and **never stores media**. Full reconstruction is the local package: \`trajectorylock analyze\` / \`trajectorylock ui\`.
 
 ## Endpoints (this Worker)

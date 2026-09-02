@@ -1,4 +1,4 @@
-"""Local UI: loopback only, Simple buttons, guardrail, no CDN."""
+"""Local UI: one screen (load JSON, run check, see result), Import+Export, guardrail, no CDN."""
 
 from __future__ import annotations
 
@@ -34,15 +34,21 @@ def test_ui_get_root_honest_scope() -> None:
         assert "THIS IS" in html
         assert "THIS IS NOT" in html
         assert "certified forensic instrument" in html.lower()
+        assert "shooter" in html.lower()
+        assert "intent" in html.lower()
+        assert "guilt" in html.lower()
         assert "Load example" in html
-        assert "Analyze" in html
-        assert "Verify hashes" in html
-        assert "Export receipt" in html
+        assert "Run check" in html
+        assert "Import" in html
+        assert "Export" in html
+        assert "Verify" in html
+        assert "Doctor" in html
         assert "how close is this line to the claimed line" in html.lower()
         assert "cdnjs" not in html.lower()
         assert "unpkg" not in html.lower()
         assert "jsdelivr" not in html.lower()
         assert ("GodLock" + ".AZ") not in html
+        assert "10.5281/zenodo.22258015" in html
         with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/health", timeout=3) as resp:
             health = json.loads(resp.read().decode("utf-8"))
         assert health["ok"] is True
@@ -61,6 +67,13 @@ def test_ui_get_root_honest_scope() -> None:
             result = json.loads(resp.read().decode("utf-8"))
         assert result["interpretation"]["certified_instrument"] is False
         assert "not a certified forensic instrument" in result["interpretation"]["guardrail"].lower()
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/doctor", timeout=20) as resp:
+            doctor = json.loads(resp.read().decode("utf-8"))
+        assert doctor["ok"] is True
+        assert "not a certified forensic instrument" in doctor["plain"].lower()
+        assert "shooter" in doctor["plain"].lower()
+        assert "intent" in doctor["plain"].lower()
+        assert "guilt" in doctor["plain"].lower()
     finally:
         httpd.shutdown()
         httpd.server_close()

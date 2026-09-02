@@ -329,13 +329,13 @@ async function indexHtml(env) {
       <p class="count">${v}<span>Views</span></p>
       <p class="count">${n}<span>Downloads</span></p>
     </div>
-    <p class="kid"><strong>Two big buttons.</strong> Download saves the gzip (the Downloads number goes up). One-click install copies a Terminal command. After it finishes, type <code>trajectorylock ui</code>.</p>
+    <p class="kid"><strong>Two big buttons.</strong> Download saves the gzip (the Downloads number goes up). One-click install copies a Terminal command. After it finishes: (1) type <code>trajectorylock ui</code>, (2) open http://127.0.0.1:8874, (3) Load example or Import JSON, then Run check. The numbers do not name a shooter, intent, or guilt.</p>
     <div class="btns">
       <a class="btn primary dl" href="/download?asset=${DEFAULT_ASSET}">Download</a>
       <button type="button" class="btn install" id="install-btn">One-click install</button>
     </div>
     <pre id="install-cmd">${INSTALL_LINE}</pre>
-    <p class="kid">Then run: <code>trajectorylock ui</code> and open http://127.0.0.1:8874 (this computer only).</p>
+    <p class="kid">Then run: <code>trajectorylock ui</code> and open http://127.0.0.1:8874 (this computer only). Load JSON, run check, see the result. Not a certified forensic instrument.</p>
     <p class="meta">The download count ticks on the Download click. The Worker serves the gzip (HTTP 200). No 302 to GitHub. Forks using this same link are counted automatically. ${DEFAULT_ASSET} — ${n} counted.</p>
     <p class="iso">Isolated counter: Worker <code>trajectorylock-download-tracker</code>, project <code>trajectorylock</code>, KV <code>TRAJECTORYLOCK_DOWNLOADS</code>. Not mixed with any other product. /v1 does not increment downloads. Hosted never stores media.</p>
     <p class="meta">GitHub: stars ${gh.stars || 0} · forks ${gh.forks || 0} · watchers ${gh.watchers || 0} · release assets ${gh.release_download_count || 0}</p>
