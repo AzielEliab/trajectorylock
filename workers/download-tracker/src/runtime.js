@@ -20,6 +20,7 @@ import {
   looksLikeMedia,
 } from "./engine.js";
 
+const EXAMPLE_PAYLOAD = EXAMPLE_CASE;
 const PROTOCOL = "2025-03-26";
 
 export const SKILL = `---
@@ -104,6 +105,8 @@ Record: https://zenodo.org/records/22258015
 File: TrajectoryLock_v0.1.pdf · Apache-2.0 · Eliab, Aziel
 
 Forks are welcome and always allowed.
+
+Local UI: Import JSON file and Export JSON.
 `;
 
 function corsHeaders() {
