@@ -143,3 +143,14 @@ curl -s -A 'Mozilla/5.0' -X POST https://aziel-runtime.vibelock.workers.dev/p/tr
 ```bash
 python -m pytest -q
 ```
+
+## Cite this
+
+Aziel Eliab. TrajectoryLock. https://github.com/AzielEliab/trajectorylock. https://trajectorylock-download-tracker.vibelock.workers.dev. https://doi.org/10.5281/zenodo.22258015.
+
+- Catalog: https://aziel-runtime.vibelock.workers.dev/
+- Worker homepage: https://trajectorylock-download-tracker.vibelock.workers.dev/
+- Counted download (gzip HTTP 200, no 302): https://trajectorylock-download-tracker.vibelock.workers.dev/download
+- GitHub: https://github.com/AzielEliab/trajectorylock
+- Citation JSON: https://trajectorylock-download-tracker.vibelock.workers.dev/cite.json
+- DOI: https://doi.org/10.5281/zenodo.22258015
