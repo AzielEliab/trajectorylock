@@ -88,7 +88,11 @@ curl -s -A 'Mozilla/5.0' -X POST https://aziel-runtime.vibelock.workers.dev/p/tr
 
 MCP tools: \`trajectorylock_health\`, \`trajectorylock_example\`, \`trajectorylock_analyze\`, \`trajectorylock_skill\`.
 
-Grok: import the catalog OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice: HTTP tools.
+## Use with AI clients
+
+Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.
+
+Import the catalog OpenAPI as a custom tool, GPT Action, or HTTP tool. Connect MCP remotes in Cursor, Glama, and other MCP clients.
 
 ## Honest banner
 
@@ -207,6 +211,7 @@ function aiHtml(origin) {
 <h1>TrajectoryLock runtime</h1>
 <p class="banner">${LIMITATION}</p>
 <p>Not a certified forensic instrument. Author Aziel Eliab.</p>
+<p>Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.</p>
 <p>OpenAPI: <a href="${origin}/openapi.json">${origin}/openapi.json</a></p>
 <p>MCP: POST <code>${origin}/mcp</code> · Catalog: <a href="${CATALOG}/">${CATALOG}</a></p>
 <p>Paper: <a href="${DOI}">${DOI}</a> · <a href="${ZENODO}">Zenodo 22258015</a> · TrajectoryLock_v0.1.pdf</p>
