@@ -105,13 +105,12 @@ Banner: not a certified instrument.
 
 Always send `User-Agent: Mozilla/5.0`. Empty agents can 403.
 
-**ChatGPT** — GPT Actions → Import from URL →
+Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.
+
+OpenAPI import (GPT Actions, custom tools, HTTP tools):
 `https://aziel-runtime.vibelock.workers.dev/openapi.json`
 
-**Grok** — custom tool / OpenAPI: same catalog URL.
 MCP remote: `POST https://aziel-runtime.vibelock.workers.dev/mcp`
-
-**Venice** — custom HTTP tools / OpenAPI: same catalog OpenAPI.
 
 Example:
 
@@ -144,14 +143,16 @@ curl -s -A 'Mozilla/5.0' -X POST https://aziel-runtime.vibelock.workers.dev/p/tr
 python -m pytest -q
 ```
 
-## Use with Grok / ChatGPT / Venice
+## Use with AI clients
+
+Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.
 
 Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json
 Catalog MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`
 This Worker skill: https://trajectorylock-download-tracker.vibelock.workers.dev/v1/skill
 This Worker OpenAPI: https://trajectorylock-download-tracker.vibelock.workers.dev/openapi.json
 
-Grok: import the catalog or Worker OpenAPI as a custom tool. ChatGPT: GPT Actions (no auth). Venice: HTTP tools. Always send `User-Agent: Mozilla/5.0`.
+Import the catalog or Worker OpenAPI as a custom tool, GPT Action, or HTTP tool. Connect MCP remotes in Cursor, Glama, and other MCP clients. Always send `User-Agent: Mozilla/5.0`.
 
 ## Cite this
 
