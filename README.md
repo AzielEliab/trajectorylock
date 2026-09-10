@@ -40,6 +40,7 @@ Direct tarball (also counted):
 - Live count JSON: [https://trajectorylock-download-tracker.vibelock.workers.dev/stats](https://trajectorylock-download-tracker.vibelock.workers.dev/stats)
 - OpenAPI: [https://trajectorylock-download-tracker.vibelock.workers.dev/openapi.json](https://trajectorylock-download-tracker.vibelock.workers.dev/openapi.json)
 - Skill: [https://trajectorylock-download-tracker.vibelock.workers.dev/v1/skill](https://trajectorylock-download-tracker.vibelock.workers.dev/v1/skill)
+- Suite mesh proxy: [https://trajectorylock-download-tracker.vibelock.workers.dev/v1/mesh](https://trajectorylock-download-tracker.vibelock.workers.dev/v1/mesh) — default OFF; QNM live / locked / isolated
 - GitHub: [https://github.com/AzielEliab/trajectorylock](https://github.com/AzielEliab/trajectorylock)
 
 Isolated counter: Worker `trajectorylock-download-tracker`, KV `TRAJECTORYLOCK_DOWNLOADS`. Not mixed with any other product. `/v1` does not increment downloads. Hosted `/v1` never stores media.
@@ -96,10 +97,13 @@ The Worker hosts a **stateless** JSON API. It does not increment DOWNLOADS. It n
 
 - `GET /v1/health`
 - `GET /v1/skill` — this repo's [SKILL.md](SKILL.md)
+- `GET /v1/mesh` — PROXY suite mesh status. Default OFF. QNM-BUILD-1.0 live|locked|isolated. Never enables.
+- `GET /v1/mesh/nodes` — PROXY Live Nodes roster (5-minute presence)
+- `POST /v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}` — PROXY. Bearer required to enable. Join while OFF returns MESH-OFF.
 - `GET /v1/example` — synthetic small JSON case
 - `POST /v1/analyze` — small JSON case in, result out (size cap; never stores media)
 - OpenAPI: `/openapi.json`
-- MCP: this Worker `/mcp` and catalog `https://aziel-runtime.vibelock.workers.dev/mcp`
+- MCP: this Worker `/mcp` and catalog `https://aziel-runtime.vibelock.workers.dev/mcp` (catalog `mesh_*` + FragGate `slug=mesh`)
 
 Banner: not a certified instrument.
 
@@ -116,6 +120,7 @@ Example:
 
 ```bash
 curl -s -A 'Mozilla/5.0' https://trajectorylock-download-tracker.vibelock.workers.dev/v1/health
+curl -s -A 'Mozilla/5.0' https://trajectorylock-download-tracker.vibelock.workers.dev/v1/mesh
 curl -s -A 'Mozilla/5.0' -X POST https://aziel-runtime.vibelock.workers.dev/p/trajectorylock/analyze \
   -H 'content-type: application/json' \
   -d '{"case_id":"MINIMAL-DIRECT-LINE","sources":[{"id":"survey-a","quality":0.95,"calibrated":true,"independence_group":"survey-a"}],"observations":[{"type":"direct_line","source_id":"survey-a","point":[0,0,1.2],"direction":[1,0.1,0.02],"angular_sigma_deg":0.5,"offset_sigma_m":0.02}],"official_hypothesis":{"point":[0.01,0.01,1.19],"direction":[1,0.11,0.02],"angular_sigma_deg":0.7,"offset_sigma_m":0.04,"angle_tolerance_deg":3.0,"offset_tolerance_m":0.25},"analysis":{"monte_carlo_samples":400,"random_seed":7}}'
@@ -151,6 +156,7 @@ Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json
 Catalog MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`
 This Worker skill: https://trajectorylock-download-tracker.vibelock.workers.dev/v1/skill
 This Worker OpenAPI: https://trajectorylock-download-tracker.vibelock.workers.dev/openapi.json
+Suite mesh `/v1/mesh/*` PROXY via `AZIEL_RUNTIME` (default OFF; QNM-BUILD-1.0 live|locked|isolated; no Node Gate). Catalog MCP `mesh_*` + FragGate `slug=mesh`.
 
 Import the catalog or Worker OpenAPI as a custom tool, GPT Action, or HTTP tool. Connect MCP remotes in Cursor, Glama, and other MCP clients. Always send `User-Agent: Mozilla/5.0`.
 
