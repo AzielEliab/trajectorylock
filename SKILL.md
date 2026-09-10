@@ -1,6 +1,6 @@
 ---
 name: TrajectoryLock
-description: Use this when testing geometric compatibility of a reconstructed trajectory with a declared official line. Research prototype, not a certified forensic instrument. Hosted /v1 via this Worker and aziel-runtime. Author Aziel Eliab.
+description: Use this when testing geometric compatibility of a reconstructed trajectory with a declared official line. Research prototype, not a certified forensic instrument. Hosted /v1 via this Worker and aziel-runtime. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Author Aziel Eliab.
 ---
 
 # TrajectoryLock
@@ -31,6 +31,9 @@ Host: `https://trajectorylock-download-tracker.vibelock.workers.dev`
 |--------|------|------|
 | GET | `/v1/health` | Liveness. Does not increment downloads. |
 | GET | `/v1/skill` | This markdown. Does not increment downloads. |
+| GET | `/v1/mesh` | PROXY suite mesh status. Default OFF. QNM live|locked|isolated. Never enables. |
+| GET | `/v1/mesh/nodes` | PROXY Live Nodes roster (5-minute presence). |
+| POST | `/v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}` | PROXY. Bearer required to enable. No auto-heal. |
 | GET | `/v1/example` | Synthetic small JSON case. Not a real case. |
 | POST | `/v1/analyze` | Small JSON case in → result. Cap size. Never stores media. |
 
@@ -45,6 +48,8 @@ also `POST https://aziel-runtime.vibelock.workers.dev/mcp`
 
 ```bash
 curl -s -A 'Mozilla/5.0' https://trajectorylock-download-tracker.vibelock.workers.dev/v1/health
+
+curl -s -A 'Mozilla/5.0' https://trajectorylock-download-tracker.vibelock.workers.dev/v1/mesh
 
 curl -s -A 'Mozilla/5.0' https://trajectorylock-download-tracker.vibelock.workers.dev/v1/example
 
@@ -85,4 +90,4 @@ File: TrajectoryLock_v0.1.pdf · Apache-2.0 · Eliab, Aziel
 
 Forks are welcome and always allowed.
 
-Local UI: Import JSON file and Export JSON.
+Local UI: Import JSON file and Export JSON. Worker homepage Live Nodes strip polls `GET /v1/mesh` (default OFF).

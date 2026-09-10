@@ -1,7 +1,9 @@
 /**
  * TrajectoryLock hosted runtime. Small JSON cases only. Never stores media.
  * /v1 never touches DOWNLOADS KV.
+ * /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME (handled in index.js before this catch-all).
  */
+import { meshOpenApiPaths, meshPointer } from "./mesh.js";
 import {
   AUTHOR,
   CATALOG,
@@ -25,7 +27,7 @@ const PROTOCOL = "2025-03-26";
 
 export const SKILL = `---
 name: TrajectoryLock
-description: Use this when testing geometric compatibility of a reconstructed trajectory with a declared official line. Research prototype, not a certified forensic instrument. Hosted /v1 via this Worker and aziel-runtime. Author Aziel Eliab.
+description: Use this when testing geometric compatibility of a reconstructed trajectory with a declared official line. Research prototype, not a certified forensic instrument. Hosted /v1 via this Worker and aziel-runtime. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Author Aziel Eliab.
 ---
 
 # TrajectoryLock
@@ -56,6 +58,9 @@ Host: \`https://trajectorylock-download-tracker.vibelock.workers.dev\`
 |--------|------|------|
 | GET | \`/v1/health\` | Liveness. Does not increment downloads. |
 | GET | \`/v1/skill\` | This markdown. Does not increment downloads. |
+| GET | \`/v1/mesh\` | PROXY suite mesh status. Default OFF. QNM live|locked|isolated. Never enables. |
+| GET | \`/v1/mesh/nodes\` | PROXY Live Nodes roster (5-minute presence). |
+| POST | \`/v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}\` | PROXY. Bearer required to enable. No auto-heal. |
 | GET | \`/v1/example\` | Synthetic small JSON case. Not a real case. |
 | POST | \`/v1/analyze\` | Small JSON case in → result. Cap size. Never stores media. |
 
@@ -70,6 +75,8 @@ also \`POST https://aziel-runtime.vibelock.workers.dev/mcp\`
 
 \`\`\`bash
 curl -s -A 'Mozilla/5.0' https://trajectorylock-download-tracker.vibelock.workers.dev/v1/health
+
+curl -s -A 'Mozilla/5.0' https://trajectorylock-download-tracker.vibelock.workers.dev/v1/mesh
 
 curl -s -A 'Mozilla/5.0' https://trajectorylock-download-tracker.vibelock.workers.dev/v1/example
 
@@ -110,7 +117,7 @@ File: TrajectoryLock_v0.1.pdf · Apache-2.0 · Eliab, Aziel
 
 Forks are welcome and always allowed.
 
-Local UI: Import JSON file and Export JSON.
+Local UI: Import JSON file and Export JSON. Worker homepage Live Nodes strip polls \`GET /v1/mesh\` (default OFF).
 `;
 
 function corsHeaders() {
@@ -149,7 +156,7 @@ function openapiSpec(origin) {
       title: "TrajectoryLock runtime",
       version: VERSION,
       summary: "Auditable geometric trajectory test. Research prototype, not a certified forensic instrument.",
-      description: LIMITATION,
+      description: LIMITATION + " Suite mesh /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME). Default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Aziel Eliab only.",
       license: { name: "Apache-2.0", identifier: "Apache-2.0" },
       contact: { name: "Aziel Eliab", url: "https://github.com/AzielEliab/trajectorylock" },
     },
@@ -192,6 +199,7 @@ function openapiSpec(origin) {
           responses: { "200": { description: "result manifest" } },
         },
       },
+      ...meshOpenApiPaths(),
     },
   };
 }
@@ -213,7 +221,8 @@ function aiHtml(origin) {
 <p>Not a certified forensic instrument. Author Aziel Eliab.</p>
 <p>Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.</p>
 <p>OpenAPI: <a href="${origin}/openapi.json">${origin}/openapi.json</a></p>
-<p>MCP: POST <code>${origin}/mcp</code> · Catalog: <a href="${CATALOG}/">${CATALOG}</a></p>
+<p>MCP: POST <code>${origin}/mcp</code> · Catalog: <a href="${CATALOG}/">${CATALOG}</a> (catalog <code>mesh_*</code> + FragGate <code>slug=mesh</code>)</p>
+<p>Suite mesh: <code>GET ${origin}/v1/mesh</code> PROXY to aziel-runtime. Default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Author: Aziel Eliab only.</p>
 <p>Paper: <a href="${DOI}">${DOI}</a> · <a href="${ZENODO}">Zenodo 22258015</a> · TrajectoryLock_v0.1.pdf</p>
 <pre>curl -A Mozilla/5.0 ${origin}/v1/health
 curl -A Mozilla/5.0 ${origin}/v1/skill
@@ -221,7 +230,7 @@ curl -A Mozilla/5.0 ${origin}/v1/example
 curl -A Mozilla/5.0 -X POST ${origin}/v1/analyze -H 'content-type: application/json' \\
   -d '{"case_id":"MINIMAL-DIRECT-LINE","sources":[{"id":"survey-a","quality":0.95,"calibrated":true,"independence_group":"survey-a"}],"observations":[{"type":"direct_line","source_id":"survey-a","point":[0,0,1.2],"direction":[1,0.1,0.02],"angular_sigma_deg":0.5,"offset_sigma_m":0.02}],"official_hypothesis":{"point":[0.01,0.01,1.19],"direction":[1,0.11,0.02],"angular_sigma_deg":0.7,"offset_sigma_m":0.04,"angle_tolerance_deg":3.0,"offset_tolerance_m":0.25}}'</pre>
 <p>GET/POST under <code>/v1</code> never increment the download counter. Hosted never stores media.</p>
-<p><a href="/">Downloads</a></p>
+<p><a href="/openapi.json">openapi.json</a> · <a href="/v1/health">health</a> · <a href="/v1/mesh">/v1/mesh</a> · <a href="/">Downloads</a></p>
 </body></html>`;
 }
 
@@ -345,6 +354,7 @@ export async function handleRuntimeApi(request, url) {
       guardrail: GUARDRAIL,
       catalog: CATALOG,
       author: AUTHOR,
+      mesh: meshPointer(),
       doi: DOI,
       zenodo: ZENODO,
       hosted_mc_cap: HOSTED_MC_CAP,
@@ -379,6 +389,7 @@ export async function handleRuntimeApi(request, url) {
   if ((path === "/ai" || url.pathname === "/ai/") && request.method === "GET") {
     return html(aiHtml(originOf(request)));
   }
+  if (path === "/v1/mesh" || path.startsWith("/v1/mesh/")) return null;
   if (path === "/v1/analyze" && request.method === "POST") {
     let body;
     try {
@@ -394,7 +405,7 @@ export async function handleRuntimeApi(request, url) {
     }
   }
   if (path.startsWith("/v1/") || path === "/v1") {
-    return json({ error: "not found", hint: "GET /v1/health  GET /v1/skill  GET /v1/example  POST /v1/analyze", limitation: LIMITATION, stored: false }, 404);
+    return json({ error: "not found", hint: "GET /v1/health  GET /v1/skill  GET /v1/example  POST /v1/analyze  GET /v1/mesh", limitation: LIMITATION, stored: false }, 404);
   }
   return null;
 }
