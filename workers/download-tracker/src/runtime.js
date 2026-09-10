@@ -27,7 +27,7 @@ const PROTOCOL = "2025-03-26";
 
 export const SKILL = `---
 name: TrajectoryLock
-description: Use this when testing geometric compatibility of a reconstructed trajectory with a declared official line. Research prototype, not a certified forensic instrument. Hosted /v1 via this Worker and aziel-runtime. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Author Aziel Eliab.
+description: Use this when testing geometric compatibility of a reconstructed trajectory with a declared official line. Research prototype, not a certified forensic instrument. Hosted /v1 via this Worker and aziel-runtime. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (qnm-node qnsd + aziel-runtime cite; AZInterface pair custody). No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Author Aziel Eliab.
 ---
 
 # TrajectoryLock
@@ -58,7 +58,7 @@ Host: \`https://trajectorylock-download-tracker.vibelock.workers.dev\`
 |--------|------|------|
 | GET | \`/v1/health\` | Liveness. Does not increment downloads. |
 | GET | \`/v1/skill\` | This markdown. Does not increment downloads. |
-| GET | \`/v1/mesh\` | PROXY suite mesh status. Default OFF. QNM live|locked|isolated. Never enables. |
+| GET | \`/v1/mesh\` | PROXY suite mesh status. Default OFF. QNM live|locked|isolated. QNS-CD-1.0 cross-map in the payload. Never enables. |
 | GET | \`/v1/mesh/nodes\` | PROXY Live Nodes roster (5-minute presence). |
 | POST | \`/v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}\` | PROXY. Bearer required to enable. No auto-heal. |
 | GET | \`/v1/example\` | Synthetic small JSON case. Not a real case. |
@@ -117,7 +117,7 @@ File: TrajectoryLock_v0.1.pdf · Apache-2.0 · Eliab, Aziel
 
 Forks are welcome and always allowed.
 
-Local UI: Import JSON file and Export JSON. Worker homepage Live Nodes strip polls \`GET /v1/mesh\` (default OFF).
+Local UI: Import JSON file and Export JSON. Worker homepage Live Nodes strip polls \`GET /v1/mesh\` (default OFF). QNS-CD-1.0 (photon QNS1 packet transfer) is a hub cite / Worker mesh cross-map only — local qnsd lives in [qnm-node](https://github.com/AzielEliab/qnm-node); runtime cites + catalog field live in [aziel-runtime](https://github.com/AzielEliab/aziel-runtime); pair custody is [AZInterface](https://github.com/AzielEliab/azinterface). Not a Softwares-tab product. No public qnsd proxy.
 `;
 
 function corsHeaders() {
@@ -156,7 +156,7 @@ function openapiSpec(origin) {
       title: "TrajectoryLock runtime",
       version: VERSION,
       summary: "Auditable geometric trajectory test. Research prototype, not a certified forensic instrument.",
-      description: LIMITATION + " Suite mesh /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME). Default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Aziel Eliab only.",
+      description: LIMITATION + " Suite mesh /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME). Default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Aziel Eliab only.",
       license: { name: "Apache-2.0", identifier: "Apache-2.0" },
       contact: { name: "Aziel Eliab", url: "https://github.com/AzielEliab/trajectorylock" },
     },
@@ -222,7 +222,7 @@ function aiHtml(origin) {
 <p>Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.</p>
 <p>OpenAPI: <a href="${origin}/openapi.json">${origin}/openapi.json</a></p>
 <p>MCP: POST <code>${origin}/mcp</code> · Catalog: <a href="${CATALOG}/">${CATALOG}</a> (catalog <code>mesh_*</code> + FragGate <code>slug=mesh</code>)</p>
-<p>Suite mesh: <code>GET ${origin}/v1/mesh</code> PROXY to aziel-runtime. Default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Author: Aziel Eliab only.</p>
+<p>Suite mesh: <code>GET ${origin}/v1/mesh</code> PROXY to aziel-runtime. Default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer cross-map (not a Softwares-tab product). No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Author: Aziel Eliab only.</p>
 <p>Paper: <a href="${DOI}">${DOI}</a> · <a href="${ZENODO}">Zenodo 22258015</a> · TrajectoryLock_v0.1.pdf</p>
 <pre>curl -A Mozilla/5.0 ${origin}/v1/health
 curl -A Mozilla/5.0 ${origin}/v1/skill

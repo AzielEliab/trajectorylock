@@ -1,6 +1,6 @@
 ---
 name: TrajectoryLock
-description: Use this when testing geometric compatibility of a reconstructed trajectory with a declared official line. Research prototype, not a certified forensic instrument. Hosted /v1 via this Worker and aziel-runtime. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Author Aziel Eliab.
+description: Use this when testing geometric compatibility of a reconstructed trajectory with a declared official line. Research prototype, not a certified forensic instrument. Hosted /v1 via this Worker and aziel-runtime. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (qnm-node qnsd + aziel-runtime cite; AZInterface pair custody). No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Author Aziel Eliab.
 ---
 
 # TrajectoryLock
@@ -31,7 +31,7 @@ Host: `https://trajectorylock-download-tracker.vibelock.workers.dev`
 |--------|------|------|
 | GET | `/v1/health` | Liveness. Does not increment downloads. |
 | GET | `/v1/skill` | This markdown. Does not increment downloads. |
-| GET | `/v1/mesh` | PROXY suite mesh status. Default OFF. QNM live|locked|isolated. Never enables. |
+| GET | `/v1/mesh` | PROXY suite mesh status. Default OFF. QNM live|locked|isolated. QNS-CD-1.0 cross-map in the payload. Never enables. |
 | GET | `/v1/mesh/nodes` | PROXY Live Nodes roster (5-minute presence). |
 | POST | `/v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}` | PROXY. Bearer required to enable. No auto-heal. |
 | GET | `/v1/example` | Synthetic small JSON case. Not a real case. |
@@ -90,4 +90,4 @@ File: TrajectoryLock_v0.1.pdf · Apache-2.0 · Eliab, Aziel
 
 Forks are welcome and always allowed.
 
-Local UI: Import JSON file and Export JSON. Worker homepage Live Nodes strip polls `GET /v1/mesh` (default OFF).
+Local UI: Import JSON file and Export JSON. Worker homepage Live Nodes strip polls `GET /v1/mesh` (default OFF). QNS-CD-1.0 (photon QNS1 packet transfer) is a hub cite / Worker mesh cross-map only — local qnsd lives in [qnm-node](https://github.com/AzielEliab/qnm-node); runtime cites + catalog field live in [aziel-runtime](https://github.com/AzielEliab/aziel-runtime); pair custody is [AZInterface](https://github.com/AzielEliab/azinterface). Not a Softwares-tab product. No public qnsd proxy.
