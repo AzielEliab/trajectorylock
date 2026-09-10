@@ -26,7 +26,9 @@ Python 3.10+. Core depends on NumPy. pytest is the dev extra. No network.
 6. **Public identity is Aziel Eliab only.** Never attach a GodLock-plus-AZ identity label.
 7. Synthetic example results must never be represented as real-case findings. No private case facts.
 8. **Door vs local op.** `/v1/mesh/*` PROXY to aziel-runtime. Local ops are `/v1/{op}` only.
-   Suite mesh default OFF; QNM rollup live|locked|isolated; no Node Gate;
+   Suite mesh default OFF; QNM rollup live|locked|isolated; QNS-CD-1.0
+   photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only
+   (not a Softwares-tab product; no public qnsd proxy); no Node Gate;
    no auto-heal; not anonymity.
 9. New behavior needs a test that fails without the change.
 
@@ -41,7 +43,7 @@ Python 3.10+. Core depends on NumPy. pytest is the dev extra. No network.
 - Skill: `SKILL.md`
 - Flutter: `mobile/`
 - Isolated counter: `workers/download-tracker/`
-- Suite mesh / QNM Live Nodes: `workers/download-tracker/src/mesh.js` (`/v1/mesh/*` PROXY to aziel-runtime).
+- Suite mesh / QNM Live Nodes / QNS-CD-1.0 cross-map: `workers/download-tracker/src/mesh.js` (`/v1/mesh/*` PROXY to aziel-runtime).
 
 ## License of contributions
 
