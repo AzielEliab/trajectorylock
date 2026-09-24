@@ -3,4 +3,4 @@ Author: Aziel Eliab
 
 1. python -m venv .venv && . .venv/bin/activate && pip install -e .
 2. trajectorylock ui
-3. Open http://127.0.0.1:8874/ and press Run check.
+3. Open http://127.0.0.1:8874/ and press Run check (satellite frame, then the line).

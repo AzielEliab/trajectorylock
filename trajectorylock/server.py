@@ -97,6 +97,14 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/analyze":
                 result = analyze_case(body)
                 return self._json(200, result)
+            if path == "/api/imagery":
+                from .imagery import pull_for_case
+
+                return self._json(200, pull_for_case(body.get("case", body)))
+            if path == "/api/review":
+                from .imagery import review_case
+
+                return self._json(200, review_case(body))
             if path == "/api/hash":
                 return self._json(200, {"files": [sha256_file(p) for p in body.get("paths", [])]})
             if path == "/api/fingerprint":

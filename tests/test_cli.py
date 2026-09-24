@@ -80,7 +80,11 @@ def test_bad_json_has_next_step(tmp_path: Path, capsys) -> None:
     assert "trajectorylock demo" in err
 
 
-def test_demo_json_and_human(capsys) -> None:
+def test_demo_json_and_human(capsys, monkeypatch) -> None:
+    monkeypatch.setattr(
+        "trajectorylock.imagery.fetch_url",
+        lambda url, timeout=12: (200, "image/jpeg", b"\xff\xd8\xff\xd9"),
+    )
     assert main(["demo", "--json"]) == 0
     data = json.loads(capsys.readouterr().out)
     assert data["schema_version"] == "trajectorylock-result-0.1"
@@ -91,6 +95,8 @@ def test_demo_json_and_human(capsys) -> None:
     assert "How close is this line to the claimed line" in out
     assert "Compatibility" in out
     assert "Aziel Eliab" in out
+    assert "NASA GIBS" in out
+    assert "not a photograph at the event minute" in out
     assert not out.lstrip().startswith("{")
 
 

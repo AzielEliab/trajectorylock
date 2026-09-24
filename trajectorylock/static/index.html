@@ -54,6 +54,67 @@ h1 {
   color: var(--muted);
   font-size: 1.05rem;
 }
+.event {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr 0.8fr 1.3fr;
+  gap: 10px;
+  margin-top: 18px;
+}
+.event label { margin: 0 0 6px; font-size: 0.92rem; }
+.event input {
+  width: 100%;
+  max-width: 100%;
+  background: var(--panel);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.65rem 0.7rem;
+  font: inherit;
+}
+.review {
+  margin-top: 18px;
+}
+.review-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+figure { margin: 0; min-width: 0; }
+.frame-wrap {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  min-height: 120px;
+}
+.frame-wrap img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.cross {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  margin: 0;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+#gap { margin: 12px; }
+.trace-label { margin: 0 0 8px; font-weight: 650; }
+#trace {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  min-height: 160px;
+  overflow: hidden;
+}
+#trace svg { display: block; width: 100%; height: auto; }
+figcaption, .trace-note { color: var(--muted); font-size: 0.92rem; margin: 8px 0 0; overflow-wrap: anywhere; }
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -175,7 +236,7 @@ footer {
 }
 @media (max-width: 640px) {
   .wrap { padding: 20px 16px 40px }
-  .metrics { grid-template-columns: 1fr }
+  .metrics, .event, .review-grid { grid-template-columns: 1fr }
   .actions button, .adv-actions button { flex: 1 1 100% }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -187,13 +248,51 @@ footer {
 <div class="wrap">
   <header>
     <h1>TrajectoryLock</h1>
-    <p class="lede">Checks how close a measured line is to a claimed line.</p>
+    <p class="lede">Pulls a satellite frame for a place and time, then checks the measured line against the claimed line.</p>
   </header>
+
+  <div class="event">
+    <div class="place">
+      <label for="place">Place</label>
+      <input id="place" type="text" autocomplete="off" spellcheck="false">
+    </div>
+    <div>
+      <label for="lat">Latitude</label>
+      <input id="lat" type="text" inputmode="decimal" autocomplete="off" spellcheck="false">
+    </div>
+    <div>
+      <label for="lon">Longitude</label>
+      <input id="lon" type="text" inputmode="decimal" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="when">
+      <label for="when">Event time (UTC)</label>
+      <input id="when" type="text" autocomplete="off" spellcheck="false" placeholder="2024-08-15T18:30:00Z">
+    </div>
+  </div>
+  <p class="help">Satellite frames are NASA GIBS, MODIS Terra corrected reflectance (true color), one daily tile. No API key.</p>
 
   <div class="actions">
     <button class="primary" id="analyze" type="button">Run check</button>
     <button class="ghost" id="doctor" type="button">Doctor</button>
   </div>
+
+  <section id="review" class="review" aria-label="Review">
+    <div class="review-grid">
+      <figure>
+        <div class="frame-wrap">
+          <img id="frame" alt="" hidden>
+          <span id="cross" class="cross" hidden></span>
+          <p id="gap" class="help">The satellite frame shows up here after Run check.</p>
+        </div>
+        <figcaption id="frame-cap"></figcaption>
+      </figure>
+      <div>
+        <p class="trace-label">Line trace</p>
+        <div id="trace"></div>
+        <p id="trace-note" class="help">Measured and claimed directions, in case coordinates.</p>
+      </div>
+    </div>
+  </section>
 
   <div class="metrics">
     <div class="metric"><b id="compat">—</b><span>Compatibility<br>how close is this line to the claimed line</span></div>
@@ -253,6 +352,83 @@ function pct(value) {
 function nextStep(message) {
   return message + "\nOpen Advanced, or press Load example.";
 }
+function fillEvent(d) {
+  const ev = (d && d.event) || {};
+  q("#place").value = ev.place || "";
+  q("#lat").value = ev.latitude === undefined || ev.latitude === null ? "" : String(ev.latitude);
+  q("#lon").value = ev.longitude === undefined || ev.longitude === null ? "" : String(ev.longitude);
+  q("#when").value = ev.time || ev.timestamp || "";
+}
+function applyEvent(caseObj) {
+  const event = Object.assign({}, caseObj.event || {});
+  const place = q("#place").value.trim();
+  const lat = q("#lat").value.trim();
+  const lon = q("#lon").value.trim();
+  const when = q("#when").value.trim();
+  if (place) event.place = place; else delete event.place;
+  if (lat) event.latitude = Number(lat); else delete event.latitude;
+  if (lon) event.longitude = Number(lon); else delete event.longitude;
+  if (when) event.time = when; else delete event.time;
+  if (Object.keys(event).length) caseObj.event = event;
+  else delete caseObj.event;
+  return caseObj;
+}
+function showImagery(imagery) {
+  const img = q("#frame");
+  const cross = q("#cross");
+  const gap = q("#gap");
+  const cap = q("#frame-cap");
+  img.hidden = true;
+  img.removeAttribute("src");
+  cross.hidden = true;
+  gap.hidden = false;
+  if (imagery && imagery.image_base64 && imagery.image_media_type) {
+    img.src = "data:" + imagery.image_media_type + ";base64," + imagery.image_base64;
+    img.alt = imagery.summary || "Satellite frame";
+    img.hidden = false;
+    gap.hidden = true;
+    const tile = imagery.tile;
+    if (tile && tile.tile_size) {
+      cross.style.left = (100 * tile.pixel_x / tile.tile_size) + "%";
+      cross.style.top = (100 * tile.pixel_y / tile.tile_size) + "%";
+      cross.hidden = false;
+    }
+    cap.textContent = (imagery.source || "Frame") + (imagery.frame_time ? " · " + imagery.frame_time : "");
+  } else {
+    gap.textContent = (imagery && imagery.summary) || "No satellite frame.";
+    cap.textContent = imagery && imagery.source ? imagery.source : "";
+  }
+}
+function unit2(v) {
+  const x = Number(v && v[0]) || 0;
+  const y = Number(v && v[1]) || 0;
+  const horizontal = Math.hypot(x, y);
+  const n = horizontal || 1;
+  return [x / n, y / n, horizontal];
+}
+function showTrace(result, caseObj) {
+  const measured = (result.trajectory && result.trajectory.direction_unit) || [0, 0, 0];
+  const claimed = (caseObj.official_hypothesis && caseObj.official_hypothesis.direction) || [0, 0, 0];
+  const m = unit2(measured);
+  const c = unit2(claimed);
+  const note = q("#trace-note");
+  if (m[2] < 0.05 && c[2] < 0.05) {
+    q("#trace").innerHTML = "";
+    note.textContent = "Both directions are nearly vertical in case coordinates, so the horizontal trace is too short to draw.";
+    return;
+  }
+  const line = (u, color, length, extra) => {
+    const x2 = 100 + u[0] * length;
+    const y2 = 100 - u[1] * length;
+    return '<line x1="100" y1="100" x2="' + x2.toFixed(2) + '" y2="' + y2.toFixed(2) + '" stroke="' + color + '" stroke-width="3" stroke-linecap="round"' + extra + '/>';
+  };
+  q("#trace").innerHTML =
+    '<svg viewBox="0 0 200 200" role="img" aria-label="Measured and claimed directions in case coordinates">' +
+    line(c, "#8fb4d9", 78, ' stroke-dasharray="7 5"') + line(m, "#c9a227", 62, "") +
+    '<circle cx="100" cy="100" r="3" fill="#c9a227"/>' +
+    "</svg>";
+  note.textContent = "Gold is measured. Dashed blue is claimed. Same direction means they overlap; the dash runs longer so both stay visible. Case coordinates, beside the frame.";
+}
 function showResult(d) {
   lastResult = d;
   const c = d.official_narrative_comparison || {};
@@ -287,7 +463,8 @@ async function load() {
     if (!r.ok) throw Error("example did not load");
     const d = await r.json();
     q("#case").value = JSON.stringify(d, null, 2);
-    q("#plain").textContent = "Example case is ready. Press Run check.";
+    fillEvent(d);
+    q("#plain").textContent = "Example is ready. Press Run check to pull the satellite frame and read the line.";
   } catch (e) {
     q("#plain").textContent = "The example case did not load.\nPress Doctor, or paste a case under Advanced.";
   }
@@ -295,17 +472,22 @@ async function load() {
 async function analyze() {
   const button = q("#analyze");
   button.disabled = true;
-  q("#plain").textContent = "Running check…";
+  q("#plain").textContent = "Pulling the satellite frame and running the check…";
   try {
-    JSON.parse(q("#case").value || "{}");
-    const r = await fetch("/api/analyze", {
+    const caseObj = applyEvent(JSON.parse(q("#case").value || "{}"));
+    q("#case").value = JSON.stringify(caseObj, null, 2);
+    const r = await fetch("/api/review", {
       method: "POST",
       headers: {"content-type": "application/json"},
-      body: q("#case").value || "{}"
+      body: JSON.stringify(caseObj)
     });
     const d = await r.json();
     if (!r.ok) throw Error(d.error || "request failed");
-    showResult(d);
+    lastResult = d.result;
+    showResult(d.result);
+    showImagery(d.imagery || {});
+    showTrace(d.result, caseObj);
+    q("#plain").textContent = d.summary || q("#plain").textContent;
   } catch (e) {
     const message = e && e.message ? e.message : "The check did not finish.";
     if (/json|unexpected|token/i.test(message)) {
@@ -372,6 +554,7 @@ q("#file").onchange = async (ev) => {
     return;
   }
   q("#case").value = text;
+  try { fillEvent(JSON.parse(text)); } catch (err) { /* already parsed */ }
   q("#plain").textContent = "Imported " + f.name + ". Press Run check.";
 };
 async function doctor() {

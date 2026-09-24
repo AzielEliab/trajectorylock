@@ -20,7 +20,7 @@ from .scope import AUTHOR, DEFAULT_PORT, LIMITATION, __version__
 
 UI_URL = f"http://127.0.0.1:{DEFAULT_PORT}/"
 
-WELCOME = f"""TrajectoryLock checks how close a measured line is to a claimed line.
+WELCOME = f"""TrajectoryLock pulls a satellite frame for a place and time, then checks how close a measured line is to a claimed line.
 
 Next, open the workbench on this computer:
 
@@ -34,7 +34,7 @@ Then open {UI_URL} and press Run check.
 Author: {AUTHOR}
 """
 
-HELP = f"""trajectorylock — check how close a measured line is to a claimed line
+HELP = f"""trajectorylock — satellite frame for a place and time, then the line check
 
 usage:
   trajectorylock
@@ -46,7 +46,7 @@ Start
   ui               open {UI_URL}
 
 Everyday
-  analyze FILE     check a case JSON file
+  analyze FILE     check a case; pulls a satellite frame when place and time are set
   demo             run the synthetic example
   doctor           self-check on this computer
 
@@ -251,7 +251,7 @@ def format_hashes(result: dict) -> str:
     return "\n".join(lines)
 
 
-def _emit_result(result: dict, *, output: str | None, as_json: bool, synthetic: bool) -> int:
+def _emit_result(result: dict, *, output: str | None, as_json: bool, synthetic: bool, case: dict | None = None) -> int:
     rendered = json.dumps(result, indent=2)
     if output:
         Path(output).write_text(rendered + "\n", encoding="utf-8")
@@ -266,10 +266,19 @@ def _emit_result(result: dict, *, output: str | None, as_json: bool, synthetic: 
         print(format_hashes(result))
     else:
         print(format_result(result, synthetic=synthetic))
+        if case is not None:
+            from .imagery import pull_for_case
+
+            imagery = pull_for_case(case)
+            if imagery.get("attempted"):
+                print()
+                print(imagery.get("summary") or "")
+                if imagery.get("next_step"):
+                    print(imagery["next_step"])
     return 0
 
 
-def _run_analyze(case_path: str) -> dict:
+def _load_case(case_path: str) -> dict:
     path = Path(case_path)
     try:
         raw = path.read_text(encoding="utf-8")
@@ -283,7 +292,7 @@ def _run_analyze(case_path: str) -> dict:
         raise ValueError(f'"{case_path}" is not valid JSON ({exc.msg} at line {exc.lineno}).') from None
     if not isinstance(data, dict):
         raise ValueError(f'"{case_path}" must be a JSON object with a case.')
-    return analyze_case(data)
+    return data
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -349,11 +358,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
 
     try:
+        case = None
         if args.command == "analyze":
-            result = _run_analyze(args.case)
+            case = _load_case(args.case)
+            result = analyze_case(case)
             synthetic = str(result.get("case_id", "")).startswith("SYNTHETIC")
         elif args.command == "demo":
-            result = analyze_case(EXAMPLE_CASE)
+            case = EXAMPLE_CASE
+            result = analyze_case(case)
             synthetic = True
         elif args.command == "hash-media":
             result = {"files": [sha256_file(path) for path in args.paths], "limitation": LIMITATION}
@@ -369,7 +381,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _fail(str(exc), "trajectorylock demo")
 
     output = getattr(args, "output", None)
-    return _emit_result(result, output=output, as_json=as_json, synthetic=synthetic)
+    return _emit_result(result, output=output, as_json=as_json, synthetic=synthetic, case=case)
 
 
 if __name__ == "__main__":

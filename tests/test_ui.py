@@ -51,6 +51,9 @@ def test_ui_get_root_honest_scope() -> None:
         assert ":focus-visible" in html
         assert ">Advanced<" in html
         assert ">Notes<" in html
+        assert "NASA GIBS" in html
+        assert "Line trace" in html
+        assert "Event time" in html
         refusal = html.lower().find("this is not")
         details = html.lower().find("<details")
         assert details != -1 and details < refusal

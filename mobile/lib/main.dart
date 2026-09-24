@@ -64,7 +64,7 @@ class _WorkbenchPageState extends State<WorkbenchPage> {
               const SizedBox(height: 20),
               FilledButton(
                 onPressed: () => say(
-                  'Run check on this computer: trajectorylock ui, then open http://127.0.0.1:8874/ and press Run check. This phone screen does not compute a line.',
+                  'On this computer, run trajectorylock ui and press Run check. The desktop pulls the satellite frame for the place and time, then reads the line. This phone screen does not fetch imagery or compute a line.',
                 ),
                 child: const Text('Run check'),
               ),

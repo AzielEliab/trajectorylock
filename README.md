@@ -1,6 +1,6 @@
 # TrajectoryLock
 
-Checks how close a measured line is to a claimed line.
+Pulls a satellite frame for a place and time, then checks how close a measured line is to a claimed line.
 
 **Author:** Aziel Eliab
 **License:** [Apache-2.0](LICENSE)
@@ -13,7 +13,7 @@ Checks how close a measured line is to a claimed line.
 
 1. Install: `curl -fsSL https://trajectorylock-download-tracker.vibelock.workers.dev/install.sh | bash`
 2. Run `trajectorylock ui` and open http://127.0.0.1:8874 (this computer only).
-3. Press **Run check**. Or open **Advanced** for **Load example**, **Import**, **Export**, and **Verify**.
+3. Press **Run check**. It pulls the NASA GIBS frame for the place and time, then shows the frame, the line trace, and the three numbers. **Load example** fills a synthetic point. **Import**, **Export**, and **Verify** are under **Advanced**.
 
 From a source checkout, the same three steps are in [RUN.txt](RUN.txt).
 
@@ -70,7 +70,7 @@ Advanced: `trajectorylock hash-media video.mp4 photo.jpg`
 
 `trajectorylock ui` prints `Open http://127.0.0.1:8874/` and serves this computer only.
 
-One primary button: **Run check**. The example case is already loaded. **Doctor** sits beside it. **Load example**, **Import**, **Export**, **Verify**, and the case JSON are under **Advanced**. Scope lives under **Notes**.
+One primary button: **Run check**. Set the place (or latitude and longitude) and the event time, then press it. The workbench pulls one NASA GIBS tile — MODIS Terra corrected reflectance, true color, daily composite, no API key — and shows that frame beside the measured and claimed directions. If the nearest day is not the event day, the summary says the source and the time gap. No stand-in image is drawn. **Load example**, **Import**, **Export**, **Verify**, and the case JSON are under **Advanced**. Scope lives under **Notes**.
 
 Three separate numbers: *how close is this line to the claimed line* (compatibility), match chance, how strong is the evidence.
 
