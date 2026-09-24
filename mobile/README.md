@@ -1,34 +1,32 @@
-# TrajectoryLock — iPhone & Android
+# TrajectoryLock on a phone
 
-How close is this line to the claimed line?
-This phone app is a kid-plain shell. Full reconstruction is the desktop package.
+Checks how close a measured line is to a claimed line.
+The line check runs in the desktop package. This screen is the phone shell.
 
-Offline. No analytics. Dark matte / gold.
+**Author:** Aziel Eliab
+
+## Three steps
+
+1. `cd mobile`
+2. `flutter create --org com.azieeliab --project-name trajectorylock . && flutter pub get`
+3. `flutter run`
 
 Application id: `com.azieeliab.trajectorylock`
 
-Not a certified forensic instrument. Not a store listing. Not a separate repo. Not store IPAs.
+Offline. No analytics. Light and dark follow the phone. Gold focus.
 
-## Open in Android Studio / Xcode
-
-The `android/` and `ios/` folders here are skeleton READMEs because
-this tree was written without the Flutter SDK on PATH.
-
-```bash
-cd mobile
-flutter create --org com.azieeliab --project-name trajectorylock .
-flutter pub get
-flutter run
-```
-
-## Honest scope
+## Notes
 
 THIS IS a research prototype / auditable geometric test.
 THIS IS NOT a certified forensic instrument.
 
+The phone shell does not compute a line. Press **Run check** for the desktop step: `trajectorylock ui`, then http://127.0.0.1:8874/.
+
+Not a store listing. Not a separate repo. Not store IPAs.
+
 Paper: https://doi.org/10.5281/zenodo.22258015
 
-## Desktop package (counted download)
+## Desktop package
 
 # → https://trajectorylock-download-tracker.vibelock.workers.dev/ ←
 

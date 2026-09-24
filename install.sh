@@ -27,6 +27,9 @@ python -m pip install -e .
 
 echo
 echo "Installed TrajectoryLock."
-echo "Run:  trajectorylock ui"
-echo "Then open http://127.0.0.1:8874  (loopback only)"
-echo "Not a certified forensic instrument. Author: Aziel Eliab."
+echo
+echo "1. trajectorylock ui"
+echo "2. Open http://127.0.0.1:8874/"
+echo "3. Press Run check."
+echo
+echo "Author: Aziel Eliab"

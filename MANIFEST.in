@@ -6,6 +6,7 @@ include SKILL.md
 include pyproject.toml
 include .gitignore
 include install.sh
+include RUN.txt
 include trajectorylock.py
 include Dockerfile
 graft docs
