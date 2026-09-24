@@ -71,7 +71,7 @@ button.primary {
   background: var(--gold);
   color: var(--gold-ink);
   border: 1px solid transparent;
-  font-weight: 680;
+  font-weight: 650;
 }
 button.ghost {
   background: transparent;
@@ -278,7 +278,7 @@ function showResult(d) {
     lines.push("", "Synthetic example. This demonstration is not a real case.");
   }
   if (warns) lines.push("", "Warnings: " + warns);
-  if (g) lines.push("", g);
+  lines.push("", "What these numbers can and cannot support is under Notes.");
   q("#plain").textContent = lines.join("\n");
 }
 async function load() {
