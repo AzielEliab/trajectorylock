@@ -1,13 +1,11 @@
 # TrajectoryLock
 
-Checks how close a line is to a claimed line. Research prototype, not a certified forensic instrument. Does not identify a shooter, intent, or guilt.
+Pulls a satellite frame for a place and time, then checks how close a measured line is to a claimed line.
 
 **Author:** Aziel Eliab
-**Date:** 2 September 2026
 **License:** [Apache-2.0](LICENSE)
 **Version:** 0.1.0
-**Spec:** `trajectorylock-v0.1`
-**Paper:** TL-WP-0.1 — [docs/TrajectoryLock_v0.1.pdf](docs/TrajectoryLock_v0.1.pdf) · DOI [10.5281/zenodo.22258015](https://doi.org/10.5281/zenodo.22258015)
+**Paper:** [10.5281/zenodo.22258015](https://doi.org/10.5281/zenodo.22258015)
 
 **Forks are welcome and always allowed.**
 
@@ -15,17 +13,9 @@ Checks how close a line is to a claimed line. Research prototype, not a certifie
 
 1. Install: `curl -fsSL https://trajectorylock-download-tracker.vibelock.workers.dev/install.sh | bash`
 2. Run `trajectorylock ui` and open http://127.0.0.1:8874 (this computer only).
-3. Tap **Load example** (or **Import** your JSON), then **Run check**. Read the three numbers. **Export** if you want a receipt.
+3. Press **Run check**. It pulls the NASA GIBS frame for the place and time, then shows the frame, the line trace, and the three numbers. **Load example** fills a synthetic point. **Import**, **Export**, and **Verify** are under **Advanced**.
 
-Those numbers say how close a line is to a claimed line. They do not name a shooter, intent, or guilt.
-
-## Honest scope
-
-**THIS IS:** research prototype / auditable geometric test. Compatibility vs declared official line. Independence groups so copies don't inflate certainty. CLI + local workbench + JSON API.
-
-**THIS IS NOT:** a certified forensic instrument; substitute for scene reconstruction, medical findings, lab exam; shooter/intent/guilt/narrative identifier; automatic detection of invisible projectiles; face recognition. Match probability is P(match | declared model), not P(official account is true). Synthetic example results must never be represented as real-case findings. No private case facts.
-
-Public identity **Aziel Eliab** only.
+From a source checkout, the same three steps are in [RUN.txt](RUN.txt).
 
 ## Counted download (Cloudflare Worker)
 
@@ -62,27 +52,34 @@ Open http://127.0.0.1:8874. No CDN, no telemetry.
 
 ## CLI
 
+Sentences are the default. Add `--json` for the machine record.
+
 ```bash
-python3 trajectorylock.py demo -o result.json
-python3 trajectorylock.py analyze examples/example_case.json -o result.json
-python3 trajectorylock.py hash-media video.mp4 photo.jpg
+trajectorylock
+trajectorylock --help
 trajectorylock ui
+trajectorylock demo
+trajectorylock demo --json
+trajectorylock analyze examples/example_case.json
 trajectorylock doctor
 ```
 
+Advanced: `trajectorylock hash-media video.mp4 photo.jpg`
+
 ## Local UI
 
-`trajectorylock ui` serves a loopback dashboard at http://127.0.0.1:8874
+`trajectorylock ui` prints `Open http://127.0.0.1:8874/` and serves this computer only.
 
-One obvious screen: **Load example** / **Import** JSON, **Run check**, see the result. **Export**. **Verify** and **Doctor** speak in plain words.
+One primary button: **Run check**. Set the place (or latitude and longitude) and the event time, then press it. The workbench pulls one NASA GIBS tile — MODIS Terra corrected reflectance, true color, daily composite, no API key — and shows that frame beside the measured and claimed directions. If the nearest day is not the event day, the summary says the source and the time gap. No stand-in image is drawn. **Load example**, **Import**, **Export**, **Verify**, and the case JSON are under **Advanced**. Scope lives under **Notes**.
+
 Three separate numbers: *how close is this line to the claimed line* (compatibility), match chance, how strong is the evidence.
-Binds `127.0.0.1` only.
+
+Light and dark follow the system. Machines can send `Accept: application/json` to `GET /`. `/api/*` stays JSON.
 
 ## iPhone & Android
 
 Flutter sources: [`mobile/`](mobile/). Application id
-`com.azieeliab.trajectorylock`. Offline. No analytics. Dark matte / gold.
-Not a store listing. Not a separate repo. Not store IPAs.
+`com.azieeliab.trajectorylock`. Offline. No analytics. Light and dark follow the phone. Gold focus.
 
 ```bash
 cd mobile
@@ -159,6 +156,19 @@ This Worker OpenAPI: https://trajectorylock-download-tracker.vibelock.workers.de
 Suite mesh `/v1/mesh/*` PROXY via `AZIEL_RUNTIME` (default OFF; QNM-BUILD-1.0 live|locked|isolated; QNS-CD-1.0 photon QNS1 packet transfer cross-map; no Node Gate; no public qnsd proxy). Catalog MCP `mesh_*` + FragGate `slug=mesh`. Local qnsd is [qnm-node](https://github.com/AzielEliab/qnm-node). Runtime cites live in [aziel-runtime](https://github.com/AzielEliab/aziel-runtime). Pair custody is [AZInterface](https://github.com/AzielEliab/azinterface). Not a Softwares-tab product.
 
 Import the catalog or Worker OpenAPI as a custom tool, GPT Action, or HTTP tool. Connect MCP remotes in Cursor, Glama, and other MCP clients. Always send `User-Agent: Mozilla/5.0`.
+
+## Notes
+
+**THIS IS:** research prototype / auditable geometric test. Compatibility vs declared official line. Independence groups so copies don't inflate certainty. CLI + local workbench + JSON API.
+
+**THIS IS NOT:** a certified forensic instrument; substitute for scene reconstruction, medical findings, lab exam; shooter/intent/guilt/narrative identifier; automatic detection of invisible projectiles; face recognition. Match probability is P(match | declared model), not P(official account is true). Synthetic example results must never be represented as real-case findings. No private case facts.
+
+The three numbers do not name a shooter, intent, or guilt.
+
+**Author:** Aziel Eliab
+**Date:** 2 September 2026
+**Spec:** `trajectorylock-v0.1`
+**Paper:** TL-WP-0.1 — [docs/TrajectoryLock_v0.1.pdf](docs/TrajectoryLock_v0.1.pdf) · DOI [10.5281/zenodo.22258015](https://doi.org/10.5281/zenodo.22258015)
 
 ## Cite this
 

@@ -28,6 +28,12 @@ EXAMPLE_CASE = {
         "angle_tolerance_deg": 3.0,
         "offset_tolerance_m": 0.25
     },
-    "analysis": {"monte_carlo_samples": 12000, "random_seed": 23}
+    "analysis": {"monte_carlo_samples": 12000, "random_seed": 23},
+    "event": {
+        "place": "Synthetic example point",
+        "latitude": 37.0,
+        "longitude": -122.0,
+        "time": "2024-08-15T18:30:00Z"
+    }
 }
 

@@ -45,24 +45,30 @@ class Handler(BaseHTTPRequestHandler):
             raise ValueError("request exceeds 10 MB")
         return json.loads(self.rfile.read(length) or b"{}")
 
+    def _health(self) -> dict:
+        return {
+            "status": "ok",
+            "ok": True,
+            "version": __version__,
+            "spec": SPEC,
+            "loopback": True,
+            "telemetry": False,
+            "certified_instrument": False,
+            "author": AUTHOR,
+            "limitation": LIMITATION,
+            "guardrail": GUARDRAIL,
+        }
+
+    def _wants_json(self) -> bool:
+        accept = (self.headers.get("Accept") or "").lower()
+        if "text/html" in accept:
+            return False
+        return "application/json" in accept
+
     def do_GET(self):
         path = urlparse(self.path).path
         if path == "/api/health":
-            return self._json(
-                200,
-                {
-                    "status": "ok",
-                    "ok": True,
-                    "version": __version__,
-                    "spec": SPEC,
-                    "loopback": True,
-                    "telemetry": False,
-                    "certified_instrument": False,
-                    "author": AUTHOR,
-                    "limitation": LIMITATION,
-                    "guardrail": GUARDRAIL,
-                },
-            )
+            return self._json(200, self._health())
         if path == "/api/example":
             return self._json(200, EXAMPLE_CASE)
         if path == "/api/doctor":
@@ -77,6 +83,8 @@ class Handler(BaseHTTPRequestHandler):
             payload["exit_code"] = code
             return self._json(200 if code == 0 else 500, payload)
         if path in ("/", "/index.html"):
+            if path == "/" and self._wants_json():
+                return self._json(200, self._health())
             return self._bytes(200, (STATIC / "index.html").read_bytes(), "text/html; charset=utf-8")
         if path == "/style.css" and (STATIC / "style.css").is_file():
             return self._bytes(200, (STATIC / "style.css").read_bytes(), "text/css; charset=utf-8")
@@ -89,6 +97,14 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/analyze":
                 result = analyze_case(body)
                 return self._json(200, result)
+            if path == "/api/imagery":
+                from .imagery import pull_for_case
+
+                return self._json(200, pull_for_case(body.get("case", body)))
+            if path == "/api/review":
+                from .imagery import review_case
+
+                return self._json(200, review_case(body))
             if path == "/api/hash":
                 return self._json(200, {"files": [sha256_file(p) for p in body.get("paths", [])]})
             if path == "/api/fingerprint":
@@ -119,8 +135,7 @@ def make_server(host: str, port: int) -> ThreadingHTTPServer:
 
 def serve(host: str = "127.0.0.1", port: int = DEFAULT_PORT) -> None:
     server = make_server(host, port)
-    print(f"TrajectoryLock workbench: http://{host}:{port}")
-    print(LIMITATION)
+    print(f"Open http://{host}:{port}/")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
@@ -141,8 +156,7 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
     if args.allow_non_loopback:
         server = ThreadingHTTPServer((args.host, args.port), Handler)
-        print(f"TrajectoryLock workbench (non-loopback): http://{args.host}:{args.port}")
-        print(LIMITATION)
+        print(f"Open http://{args.host}:{args.port}/")
         try:
             server.serve_forever()
         except KeyboardInterrupt:

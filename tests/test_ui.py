@@ -47,6 +47,16 @@ def test_ui_get_root_honest_scope() -> None:
         assert "cdnjs" not in html.lower()
         assert "unpkg" not in html.lower()
         assert "jsdelivr" not in html.lower()
+        assert "prefers-color-scheme" in html
+        assert ":focus-visible" in html
+        assert ">Advanced<" in html
+        assert ">Notes<" in html
+        assert "NASA GIBS" in html
+        assert "Line trace" in html
+        assert "Event time" in html
+        refusal = html.lower().find("this is not")
+        details = html.lower().find("<details")
+        assert details != -1 and details < refusal
         assert ("GodLock" + ".AZ") not in html
         assert "10.5281/zenodo.22258015" in html
         with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/health", timeout=3) as resp:
